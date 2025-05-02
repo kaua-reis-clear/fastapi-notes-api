@@ -1,6 +1,7 @@
 from datetime import datetime
 from typing import List
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+from uuid import UUID
 
 class NoteBaseSchema(BaseModel):
   id: str | None = None
@@ -12,11 +13,24 @@ class NoteBaseSchema(BaseModel):
   updatedAt: datetime | None = None
   
   class Config:
-    orm_mode = True
-    allow_population_by_field_name = True
+    from_attributes = True
+    validate_by_name = True
     arbitrary_types_allowed = True
     
 class ListNoteResponse(BaseModel):
   status: str
   results: str
   notes: List[NoteBaseSchema]
+  
+  
+class UserCreate(BaseModel):
+  email: EmailStr
+  password: str
+
+class UserOut(BaseModel):
+  id: UUID
+  email: EmailStr
+  createdAt: datetime
+
+  class Config:
+    from_attributes = True

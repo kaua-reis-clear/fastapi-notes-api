@@ -16,5 +16,21 @@ class Note(Base):
   updatedAt = Column(TIMESTAMP(timezone=True),
                      default=None, onupdate=func.now())
   
-  def __repr__(self):
+  def __repr__(self) -> str:
     return self.title
+  
+  
+  
+class User(Base):
+  __tablename__ = 'users'
+  id = Column(GUID, primary_key=True,
+              server_default=GUID_SERVER_DEFAULT_POSTGRESQL)
+  email = Column(String, nullable=False, unique=True)
+  password = Column(String, nullable=False)
+  createdAt = Column(TIMESTAMP(timezone=True),
+                     nullable=False, server_default=func.now())
+  updatedAt = Column(TIMESTAMP(timezone=True),
+                     default=None, onupdate=func.now())
+  
+  def __repr__(self) -> str:
+    return self.email

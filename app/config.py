@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     POSTGRES_DB: str
     DATABASE_PORT: int
     DATABASE_URI: str
+    JWT_SECRET: str
+    JWT_ALGORITHM: str
     
     class Config:
       env_file = '.env'

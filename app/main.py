@@ -1,4 +1,4 @@
-from app import models, note
+from app import auth, models, note
 from fastapi import FastAPI, APIRouter
 from fastapi.middleware.cors import CORSMiddleware
 from .database import engine
@@ -19,6 +19,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(auth.router, tags=['Auth'])
 app.include_router(note.router, tags=['Notes'], prefix='/api/notes')
 
 @app.get('/api/healthchecker')
