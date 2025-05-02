@@ -1,7 +1,7 @@
-from . import schemas, models
+from app import schemas, models
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, APIRouter, Response
-from .database import get_db
+from app.config.database import get_db
 
 router = APIRouter()
 
@@ -15,7 +15,7 @@ def get_notes(db: Session = Depends(get_db), limit: int = 10, page: int = 1, sea
   return {'status': 'success', 'results': len(notes), 'notes': notes}
 
 @router.post('/', status_code=status.HTTP_201_CREATED)
-def create_note(payload: schemas.NoteBaseSchema, db: Session = Depends(get_db)):
+def create_note(payload: schemas.note.NoteBaseSchema, db: Session = Depends(get_db)):
   new_note = models.Note(**payload.model_dump())
   db.add(new_note)
   db.commit()
@@ -23,7 +23,7 @@ def create_note(payload: schemas.NoteBaseSchema, db: Session = Depends(get_db)):
   return {'status': 'success', 'note': new_note}
 
 @router.patch('/{noteId}')
-def update_note(noteId: str, payload: schemas.NoteBaseSchema, db: Session = Depends(get_db)):
+def update_note(noteId: str, payload: schemas.note.NoteBaseSchema, db: Session = Depends(get_db)):
   note_query = db.query(models.Note).filter(models.Note.id == noteId)
   db_note = note_query.first()
   
