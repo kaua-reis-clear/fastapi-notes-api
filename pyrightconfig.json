@@ -1,0 +1,13 @@
+{
+  "typeCheckingMode": "strict",
+  "include": [
+    "app",
+    "tests"
+  ], // ajuste para suas pastas de código
+  "exclude": [
+    "**/migrations",
+    "**/__pycache__"
+  ],
+  "reportMissingImports": true,
+  "reportMissingTypeStubs": false
+}
