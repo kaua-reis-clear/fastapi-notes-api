@@ -20,7 +20,7 @@ app.add_middleware(
 )
 
 app.include_router(routes.auth.router, tags=['Auth'])
-app.include_router(routes.notes.router, tags=['Notes'], prefix='/api/notes')
+app.include_router(routes.notes.router, tags=['Notes'], prefix='/notes')
 
 @app.get('/')
 def root():

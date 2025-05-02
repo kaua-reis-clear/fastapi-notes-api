@@ -2,11 +2,12 @@ from app import schemas, models
 from sqlalchemy.orm import Session
 from fastapi import Depends, HTTPException, status, APIRouter, Response
 from app.config.database import get_db
+from app.helpers.auth import get_current_user
 
 router = APIRouter()
 
-@router.get('/')
-def get_notes(db: Session = Depends(get_db), limit: int = 10, page: int = 1, search: str = ''):
+@router.get('')
+def get_notes(db: Session = Depends(get_db), current_user = Depends(get_current_user), limit: int = 10, page: int = 1, search: str = ''):
   skip = (page - 1) * limit
   
   notes = db.query(models.Note).filter(
@@ -14,8 +15,8 @@ def get_notes(db: Session = Depends(get_db), limit: int = 10, page: int = 1, sea
   
   return {'status': 'success', 'results': len(notes), 'notes': notes}
 
-@router.post('/', status_code=status.HTTP_201_CREATED)
-def create_note(payload: schemas.note.NoteBaseSchema, db: Session = Depends(get_db)):
+@router.post('', status_code=status.HTTP_201_CREATED)
+def create_note(payload: schemas.note.NoteBaseSchema, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
   new_note = models.Note(**payload.model_dump())
   db.add(new_note)
   db.commit()
@@ -23,7 +24,7 @@ def create_note(payload: schemas.note.NoteBaseSchema, db: Session = Depends(get_
   return {'status': 'success', 'note': new_note}
 
 @router.patch('/{noteId}')
-def update_note(noteId: str, payload: schemas.note.NoteBaseSchema, db: Session = Depends(get_db)):
+def update_note(noteId: str, payload: schemas.note.NoteBaseSchema, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
   note_query = db.query(models.Note).filter(models.Note.id == noteId)
   db_note = note_query.first()
   
@@ -39,7 +40,7 @@ def update_note(noteId: str, payload: schemas.note.NoteBaseSchema, db: Session =
   return {'status': 'success', 'note': db_note}
 
 @router.get('/{noteId}')
-def get_note(noteId: str, db: Session = Depends(get_db)):
+def get_note(noteId: str, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
   note = db.query(models.Note).filter(models.Note.id == noteId).first()
   if not note:
     raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
@@ -48,7 +49,7 @@ def get_note(noteId: str, db: Session = Depends(get_db)):
   return {'status': 'success', 'note': note}
 
 @router.delete('/{noteId}', status_code=status.HTTP_204_NO_CONTENT)
-def delete_note(noteId: str, db: Session = Depends(get_db)):
+def delete_note(noteId: str, db: Session = Depends(get_db), current_user = Depends(get_current_user)):
   note_query = db.query(models.Note).filter(models.Note.id == noteId)
   note = note_query.first()
   if not note:
