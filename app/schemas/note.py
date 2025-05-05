@@ -5,9 +5,9 @@ from uuid import UUID
 
 class NoteBaseSchema(BaseModel):
   id: str | None = None
-  title: str
-  content: str
-  published: bool = True
+  title: str | None = None
+  content: str | None = None
+  published: bool | None = True
   createdAt: datetime | None = None
   updatedAt: datetime | None = None
   
