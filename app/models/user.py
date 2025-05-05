@@ -1,8 +1,8 @@
-from typing import Optional
+from typing import Optional, List
 from app.config.database import Base
 from sqlalchemy import TIMESTAMP, String, Uuid
 from sqlalchemy.sql import func
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from fastapi_utils.guid_type import GUID_SERVER_DEFAULT_POSTGRESQL
 
 class User(Base):
@@ -13,6 +13,7 @@ class User(Base):
   password: Mapped[str] = mapped_column(String(100), nullable=False)
   createdAt: Mapped[str] = mapped_column(TIMESTAMP(timezone=True), server_default=func.now(), nullable=False)
   updatedAt: Mapped[Optional[str]] = mapped_column(TIMESTAMP(timezone=True), default=None, onupdate=func.now())
+  notes: Mapped[List['Note']] = relationship(back_populates="user", order_by="desc(Note.createdAt)")
   
   def __repr__(self) -> str:
     return self.email
