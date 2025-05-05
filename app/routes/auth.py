@@ -8,12 +8,17 @@ from app.helpers.auth import create_access_token, get_current_user, hash_passwor
 router = APIRouter()
 
 @router.post('/sign_up', response_model=schemas.user.UserOut, status_code=201)
-def sign_up(payload: schemas.user.UserCreate, db: Session = Depends(get_db)):
+def sign_up(payload: schemas.user.UserCreate, response: Response, db: Session = Depends(get_db)):
   hashed_password = hash_password(payload.password)
+
   new_user = models.User(email=payload.email, password=hashed_password)
   db.add(new_user)
   db.commit()
   db.refresh(new_user)
+  
+  access_token = create_access_token(new_user.id.__str__())
+  response.headers['Access-Token'] = access_token
+  
   return new_user
 
 @router.post('/login', response_model=schemas.user.UserOut)
