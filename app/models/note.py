@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from app.config.database import Base
 from sqlalchemy import TIMESTAMP, String, Boolean, Uuid, ForeignKey
 from sqlalchemy.sql import func
@@ -15,6 +15,7 @@ class Note(Base):
   updatedAt: Mapped[Optional[str]] = mapped_column(TIMESTAMP(timezone=True), default=None, onupdate=func.now())
   userId: Mapped[str] = mapped_column(ForeignKey('users.id'))
   user: Mapped['User'] = relationship(back_populates="notes")
+  tags: Mapped[List['Tag']] = relationship(secondary='note_tags', back_populates="notes")
   
   def __repr__(self) -> str:
     return self.title

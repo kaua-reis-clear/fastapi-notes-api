@@ -21,6 +21,7 @@ app.add_middleware(
 
 app.include_router(routes.auth.router, tags=['Auth'])
 app.include_router(routes.notes.router, tags=['Notes'], prefix='/notes')
+app.include_router(routes.tag.router)
 
 @app.get('/')
 def root():
